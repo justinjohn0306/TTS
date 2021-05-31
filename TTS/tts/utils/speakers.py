@@ -133,10 +133,10 @@ class SpeakerManager:
             self.speaker_ids, _ = self.parse_speakers_from_data(self.data_items)
 
         if x_vectors_file_path:
-            self.load_x_vectors_file(x_vectors_file_path)
+            self.set_x_vectors_from_file(x_vectors_file_path)
 
         if speaker_id_file_path:
-            self.load_ids_file(speaker_id_file_path)
+            self.set_speaker_ids_from_file(speaker_id_file_path)
 
         if encoder_model_path and encoder_config_path:
             self.init_speaker_encoder(encoder_model_path, encoder_config_path)
@@ -241,7 +241,7 @@ class SpeakerManager:
         """
         return [x["embedding"] for x in self.x_vectors.values() if x["name"] == speaker_idx]
 
-    def get_mean_x_vector(self, speaker_idx: str, num_samples: int = None, randomize: bool = False) -> np.Array:
+    def get_mean_x_vector(self, speaker_idx: str, num_samples: int = None, randomize: bool = False) -> np.ndarray:
         """Get mean x_vector of a speaker ID.
 
         Args:
@@ -250,7 +250,7 @@ class SpeakerManager:
             randomize (bool, optional): Pick random `num_samples`of x_vectors. Defaults to False.
 
         Returns:
-            np.Array: Mean x_vector.
+            np.ndarray: Mean x_vector.
         """
         x_vectors = self.get_x_vectors_by_speaker(speaker_idx)
         if num_samples is None:
@@ -315,11 +315,11 @@ class SpeakerManager:
         x_vector = _compute(wav_file)
         return x_vector[0].tolist()
 
-    def compute_x_vector(self, feats: Union[torch.Tensor, np.Array]) -> List:
+    def compute_x_vector(self, feats: Union[torch.Tensor, np.ndarray]) -> List:
         """Compute x_vector from features.
 
         Args:
-            feats (Union[torch.Tensor, np.Array]): Input features.
+            feats (Union[torch.Tensor, np.ndarray]): Input features.
 
         Returns:
             List: computed x_vector.
