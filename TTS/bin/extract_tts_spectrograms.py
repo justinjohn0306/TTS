@@ -136,19 +136,19 @@ def inference(
     text_lengths,
     mel_input,
     mel_lengths,
-    attn_mask=None,
     speaker_ids=None,
     speaker_embeddings=None,
 ):
     if model_name == "glow_tts":
-        mel_input = mel_input.permute(0, 2, 1)  # B x D x T
         speaker_c = None
         if speaker_ids is not None:
             speaker_c = speaker_ids
         elif speaker_embeddings is not None:
             speaker_c = speaker_embeddings
 
-        outputs = model.inference_with_MAS(text_input, text_lengths, mel_input, mel_lengths, attn_mask, g=speaker_c)
+        outputs = model.inference_with_MAS(
+            text_input, text_lengths, mel_input, mel_lengths, cond_input={"x_vector": speaker_c}
+        )
         model_output = outputs["model_outputs"]
         model_output = model_output.transpose(1, 2).detach().cpu().numpy()
 
@@ -187,7 +187,7 @@ def extract_spectrograms(
             speaker_embeddings,
             _,
             _,
-            attn_mask,
+            _,
             item_idx,
         ) = format_data(data)
 
@@ -199,7 +199,6 @@ def extract_spectrograms(
             text_lengths,
             mel_input,
             mel_lengths,
-            attn_mask,
             speaker_ids,
             speaker_embeddings,
         )
